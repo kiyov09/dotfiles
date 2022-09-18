@@ -1,0 +1,557 @@
+
+lua <<EOF
+  require('options')
+EOF
+
+
+" MIS CONFIGS
+filetype on
+filetype plugin indent on
+
+" set number
+" set showcmd " Show (partial) command in status line.
+" set showmatch " Show matching brackets.
+" set incsearch " Incremental search
+" set autowrite " Automatically save before commands like :next and :make
+" set mouse=a   " Enable mouse usage
+" set hlsearch
+" set tabstop=4
+" set softtabstop=4
+" set shiftwidth=4
+" set textwidth=81
+" set expandtab
+" set fileformat=unix
+" set cursorline
+" set guicursor=i:block
+" set wrap
+" set tw=0
+" set relativenumber
+" set redrawtime=5000
+" set backspace=indent,eol,start
+" set linebreak
+" set showtabline=0
+" set timeoutlen=500
+" set wildmenu
+" set foldmethod=indent foldlevel=99
+" set autoindent cindent
+" set signcolumn=yes
+" set inccommand=split
+
+" " ignore and smart case search
+" set ignorecase
+" set smartcase
+
+" " Better split behavior
+" " set splitbelow
+" set splitright
+
+" Wrap for the quickfix window
+augroup quickfix
+    autocmd!
+    autocmd FileType qf setlocal wrap
+augroup END
+
+" vim-plug
+call plug#begin('~/.vim/plugged')
+
+Plug 'gruvbox-community/gruvbox'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'jiangmiao/auto-pairs'
+Plug 'mrjones2014/dash.nvim', { 'do': 'make install' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'alexlafroscia/postcss-syntax.vim'
+
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-markdown'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-vinegar'
+
+Plug 'mhinz/vim-grepper'
+Plug 'kshenoy/vim-signature'
+Plug 'mhinz/vim-startify'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'bronson/vim-trailing-whitespace'
+
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
+" MDX (Markdown with jsx)
+Plug 'jxnblk/vim-mdx-js'
+
+" LSP
+Plug 'neovim/nvim-lspconfig'
+
+" Completion
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-nvim-lua'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+
+" Treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'windwp/nvim-ts-autotag'
+
+" Telescope
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+
+" Dev icons
+Plug 'kyazdani42/nvim-web-devicons'
+
+" Database
+Plug 'tpope/vim-dadbod'
+Plug 'kristijanhusak/vim-dadbod-ui'
+
+" Copilot
+Plug 'github/copilot.vim'
+
+" Lua Vim dev
+Plug 'folke/lua-dev.nvim'
+
+
+call plug#end()
+" vim-plug end
+
+" <leader> key
+let mapleader = " "
+let g:mapleader = " "
+
+
+" Map 'j' and 'k' to take wrap lines into account
+noremap j gj
+noremap k gk
+
+" FZF
+" set rtp+=/run/media/Datos/Programs/vim/NEW/fzf
+" set rtp+=/usr/local/opt/fzf
+
+" map <leader>p :Files<CR>
+" map <leader>b :Buffers<CR>
+
+" let g:fzf_action = {
+"     \ 'ctrl-q': 'wall | bdelete',
+"     \ 'ctrl-t': 'tab split',
+"     \ 'ctrl-x': 'split',
+"     \ 'ctrl-v': 'vsplit' }
+
+" let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+
+if executable('rg')
+    set grepprg=rg\ --vimgrep\ --color=never
+endif
+
+" command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow  --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+
+"Files ignored
+set wildignore=*.so,*.swp,*.pyc,*.zip,*.rar
+
+" enable syntax highlighting
+syntax on
+syntax enable
+
+" set termguicolors
+" set background=dark
+
+if exists('+termguicolors')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum]"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum]"
+endif
+
+let g:gruvbox_contrast_dark='hard'
+let g:gruvbox_invert_selection='0'
+colorscheme gruvbox
+
+" Airline plugin
+" set laststatus=2
+let g:airline_theme='gruvbox'
+
+" underline cursor line
+hi CursorLine gui=underline cterm=underline
+
+" Remap <Esc> to jk
+inoremap jk <Esc>
+
+" For Markdown
+au! BufRead,BufNewFile *.markdown set filetype=markdown
+au! BufRead,BufNewFile *.md       set filetype=markdown
+
+" Omnifuncs
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcompleter#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType scss setl iskeyword+=@-@ " For coc-css
+
+au FileType ruby setl sw=2 sts=2 et
+
+" LSP Setup
+
+" Completion (nvim-cmp)
+
+set completeopt=menu,menuone,noselect
+
+lua <<EOF
+  -- Setup nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        vim.fn["UltiSnips#Anon"](args.body)
+      end,
+    },
+    mapping = {
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.close(),
+      ['<CR>'] = cmp.mapping.confirm({ select = false }), -- false to prevent insert if no selected
+      ['<C-n>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        else
+          fallback()
+        end
+      end,
+      ['<C-p>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        else
+          fallback()
+        end
+      end,
+    },
+    sources = {
+      { name = 'nvim_lsp' },
+      { name = 'ultisnips' },
+      { name = 'buffer' },
+      { name = 'nvim_lua' },
+    }
+  })
+EOF
+
+
+" use <c-j> to switch to previous completion
+" imap <c-j> <Plug>(completion_next_source)
+"use <c-k> to switch to next completion
+" imap <c-k> <Plug>(completion_prev_source)
+
+" LSP Servers
+lua << EOF
+
+    function on_attach (client)
+      if client.name ~= 'efm' then
+        client.resolved_capabilities.document_formatting = false
+      end
+
+      if client.resolved_capabilities.document_formatting then
+        vim.cmd [[
+          augroup Format
+            au! * <buffer>
+            au BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 2000)
+          augroup END
+        ]]
+      end
+    end
+
+    require'lspconfig'.tsserver.setup{
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+      on_attach = on_attach
+    }
+
+    require'lspconfig'.vimls.setup{
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    }
+
+    require'lspconfig'.bashls.setup{
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    }
+
+    require'lspconfig'.dotls.setup{
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    }
+
+    require'lspconfig'.tailwindcss.setup{
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+      settings = {
+        tailwindCSS = {
+          classAttributes = { 'class' , 'className' , 'classList' }
+        }
+      }
+    }
+
+    require'lspconfig'.html.setup{
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    }
+
+    require'lspconfig'.sqlls.setup{
+      cmd = {'sql-language-server', 'up', '--method', 'stdio'},
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    }
+
+    require'lspconfig'.cssls.setup{
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    }
+
+    -- EFM
+    local eslint = {
+        lintCommand = 'eslint_d -f unix --stdin --stdin-filename ${INPUT}',
+        lintIgnoreExitCode = true,
+        lintStdin = true,
+        lintFormats = { '%f:%l:%c: %m' },
+        formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}',
+        formatStdin = true,
+    }
+
+    local prettier = { formatCommand = 'npx prettier --stdin-filepath ${INPUT}', formatStdin = true }
+
+    local config = {
+        css = { prettier },
+        html = { prettier },
+        javascript = { prettier, eslint },
+        javascriptreact = { prettier, eslint },
+        json = { prettier },
+        markdown = { prettier },
+        scss = { prettier },
+        typescript = { prettier, eslint },
+        typescriptreact = { prettier, eslint },
+    }
+
+    require'lspconfig'.efm.setup{
+        init_options = {documentFormatting = true},
+        filetypes = vim.tbl_keys(config),
+        settings = {
+            rootMarkers = {".git/"},
+            languages = config
+        },
+        on_attach = on_attach,
+        capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    }
+
+    -- Emmet
+	local lspconfig = require'lspconfig'
+	local configs = require'lspconfig/configs'
+
+    if not lspconfig.emmet_ls then
+      configs.emmet_ls = {
+        default_config = {
+          cmd = {'emmet-ls', '--stdio'};
+          filetypes = {'html', 'css', 'typescriptreact'};
+          root_dir = function(fname)
+            return vim.loop.cwd()
+          end;
+          settings = {};
+        };
+      }
+    end
+    require'lspconfig'.emmet_ls.setup{
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    }
+
+
+    -- Lua
+
+    -- local luadev = require("lua-dev").setup({})
+    -- require'lspconfig'.sumneko_lua.setup(luadev)
+
+    require'lspconfig'.sumneko_lua.setup{
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+      settings = {
+        Lua = {
+          -- runtime = { version = 'LuaJIT', path = vim.split(package.path, ';') },
+          runtime = { version = 'LuaJIT' },
+          diagnostics = {
+            globals = {'vim', 'hs'},
+          },
+          workspace = {
+            -- Make the server aware of Neovim runtime files
+            library = vim.api.nvim_get_runtime_file("", true),
+            -- library = {
+            --   '/Users/placeit/.hammerspoon/Spoons/EmmyLua.spoon/annotations/',
+            --   -- '/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/'
+            -- }
+          },
+          telemetry = { enable = false, },
+        },
+      }
+    }
+EOF
+
+" Treesitter
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+    -- windwp/nvim-ts-autotag
+    autotag = {
+        enable = true
+    },
+    -- END windwp/nvim-ts-autotag
+
+    highlight = {
+        enable = true,
+        disable = {},
+    },
+    indent = {
+        enable = true,
+        disable = {}
+    },
+    ensure_installed = {
+        "tsx",
+        "javascript",
+        "typescript",
+        "json",
+        "html",
+        "css",
+        "scss",
+        "vim",
+        "lua",
+    }
+}
+EOF
+
+" Telescope
+lua <<EOF
+    -- You dont need to set any of these options. These are the default ones. Only
+    -- the loading is important
+    require('telescope').setup {
+        extensions = {
+            fzf = {
+                fuzzy = true,                    -- false will only do exact matching
+                override_generic_sorter = true,  -- override the generic sorter
+                override_file_sorter = true,     -- override the file sorter
+                case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+                -- the default case_mode is "smart_case"
+            }
+        }
+    }
+    -- To get fzf loaded and working with telescope, you need to call
+    -- load_extension, somewhere after setup function:
+    require('telescope').load_extension('fzf')
+EOF
+
+nnoremap <leader>tf <cmd>lua require('telescope.builtin').find_files({ hidden=true })<cr>
+nnoremap <leader>tg <cmd>lua require('telescope.builtin').live_grep()<cr>
+nnoremap <leader>tb <cmd>lua require('telescope.builtin').buffers()<cr>
+nnoremap <leader>ts <cmd>lua require('telescope.builtin').grep_string()<cr>
+
+" Telescope END
+
+" Dev icons
+lua <<EOF
+require'nvim-web-devicons'.setup {}
+EOF
+" Dev icons END
+
+" enable all Python syntax highlighting features
+let python_highlight_all = 1
+
+" Auto-open quickfix after search
+augroup myvimrc
+    autocmd!
+    autocmd QuickFixCmdPost [^l]* cwindow
+    autocmd QuickFixCmdPost l*    lwindow
+augroup END
+
+" Buscar texto seleccionado
+vnoremap // y/<C-R>"<CR>
+
+" Search JS neon function declaration
+nmap <leader>* yiw/<C-R>".*:<cr>
+
+" Group for match
+hi MatchGroup cterm=bold ctermfg=231 ctermbg=64 gui=bold guifg=#f8f8f2 guibg=#46830c
+" Highlight selected text
+vnoremap # y:match MatchGroup /<C-R>"/<CR>
+" Highlight work the cursos is on
+nnoremap # viwy:match MatchGroup /<C-R>"/<CR>
+
+
+" Better Diff (From monokai theme)
+hi DiffAdd ctermfg=231 ctermbg=64 cterm=bold guifg=#f8f8f2 guibg=#46830c gui=bold
+hi DiffDelete ctermfg=88 ctermbg=NONE cterm=NONE guifg=#8b0807 guibg=NONE gui=NONE
+hi DiffChange ctermfg=NONE ctermbg=NONE cterm=NONE guifg=#f8f8f2 guibg=#243955 gui=NONE
+hi DiffText ctermfg=231 ctermbg=24 cterm=bold guifg=#f8f8f2 guibg=#204a87 gui=bold
+
+
+" Save file
+nmap <leader>w :w<cr>
+
+" Copy to system clipboard
+nmap <leader>y "+y
+nmap <leader>Y "+Y
+
+" Fugitive mapping
+nmap <leader>gs :Git<cr>
+nmap <leader>gb :Git blame<cr>
+nmap <leader>gpo :Git pull --ff-only origin<space>
+nmap <leader>gpr :Git pull --rebase origin<space>
+nmap <leader>gP :Git push origin<space>
+nmap <leader>gd :Git diff<cr>
+nmap <leader>gl :Gclog -n 100 --<cr>
+nmap <leader>gw :GBrowse<cr>
+" Shows all above mappings (help)
+nmap <leader>g? :map <leader>g<cr>
+
+" Grepper mapping
+" nmap <leader>GG yiw:GrepperRg<Space><C-R>"
+" nmap <leader>G :GrepperRg<Space>
+
+" Open Terminal
+" nmap <leader>t :terminal<cr><c-w>J
+
+" File explorer
+nnoremap <leader>f :Explore<CR>
+nnoremap <leader>sf :Sexplore<CR>
+nnoremap <leader>vf :Vexplore!<CR>
+
+" Use arrow key to resize splits
+nnoremap <Left> :vertical resize -1<CR>
+nnoremap <Right> :vertical resize +1<CR>
+nnoremap <Up> :resize -1<CR>
+nnoremap <Down> :resize +1<CR>
+
+" Disable arrow keys completely in Insert Mode
+imap <up> <nop>
+imap <down> <nop>
+imap <left> <nop>
+imap <right> <nop>
+
+" Move between windows withour CTRL-W
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" Open from Quick List into vertical split
+nnoremap <leader>V <C-W><C-K><C-W>v<C-W><C-J><CR>
+
+map <leader><leader> <c-^>
+
+" UtiSnips
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-n>"
+let g:UltiSnipsJumpBackwardTrigger="<c-p>"
+
+" For conceal markers.
+" if has('conceal')
+"   set conceallevel=2 concealcursor=niv
+" endif
+
+
+" Startify
+let g:startify_change_to_dir = 0
+
+" Colorizer
+let g:colorizer_nomap = 1
+
+" Uncomment this lines to work with parcel
+" set nobackup
+" set nowritebackup
+
+" Coc plugins config
+" command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
