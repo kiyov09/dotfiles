@@ -1,0 +1,19 @@
+[user]
+	name = Enrique Mejías Álvarez
+	email = enrique.mejias@envato.com
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[merge]
+	tool = vimdiff
+	conflictstyle = diff3
+[mergetool]
+	prompt = false
+[rerere]
+	enabled = false
+[credential]
+	helper = oskeychain
