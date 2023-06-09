@@ -6,17 +6,16 @@ treesitter.setup {
     enable = true
   },
   -- END windwp/nvim-ts-autotag
-
   highlight = {
     enable = true,
     disable = {},
   },
-
   indent = {
     enable = true,
     disable = {}
   },
-
+  auto_install = true,
+  additional_vim_regex_highlighting = false,
   ensure_installed = {
     "tsx",
     "javascript",
@@ -30,5 +29,7 @@ treesitter.setup {
     "rust",
     "ruby",
     "toml",
+    "markdown",
+    "markdown_inline",
   }
 }

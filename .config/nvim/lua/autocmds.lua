@@ -18,6 +18,18 @@ api.nvim_create_autocmd("FileType", {
   pattern = { "ruby", "lua" },
 })
 
+-- Set tabs for: js, ts (if package.json exists)
+api.nvim_create_autocmd("FileType", {
+  command = "if filereadable('package.json') | setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab | endif",
+  pattern = { "javascript", "typescript", "typescriptreact", "javascriptreact" },
+})
+
+-- Set conceallevel for markdown
+api.nvim_create_autocmd("FileType", {
+  command = "setlocal conceallevel=0",
+  pattern = "markdown",
+})
+
 local highlightAuGrp = api.nvim_create_augroup("Highlight", {
   clear = true,
 })
@@ -43,7 +55,7 @@ end
 M.set_format_on_save = function ()
   api.nvim_create_autocmd("BufWritePre", {
     callback = function ()
-      vim.lsp.buf.formatting_sync({}, 2000)
+      vim.lsp.buf.format({ timeout_ms = 2000 })
     end,
     group = api.nvim_create_augroup("Format", {
       clear = true,

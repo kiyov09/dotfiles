@@ -7,14 +7,17 @@ return require('packer').startup(function(use)
 
   -- Color schemes
   use 'gruvbox-community/gruvbox'
-  use { "catppuccin/nvim", as = "catppuccin" }
+  use 'sainnhe/gruvbox-material'
+  use 'folke/tokyonight.nvim'
+  use 'Shatur/neovim-ayu'
 
-  -- Airline
-  use 'vim-airline/vim-airline'
-  use 'vim-airline/vim-airline-themes'
+  -- Lualine
+  use {
+    'nvim-lualine/lualine.nvim',
+    requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+  }
 
   -- Auto pairs
-  -- use 'jiangmiao/auto-pairs'
   use {
 	  "windwp/nvim-autopairs",
   }
@@ -28,6 +31,7 @@ return require('packer').startup(function(use)
   -- From the great tpope
   use 'tpope/vim-commentary'
   use 'tpope/vim-fugitive'
+  use 'tpope/vim-rhubarb'
   use 'tpope/vim-markdown'
   use 'tpope/vim-surround'
   use 'tpope/vim-unimpaired'
@@ -36,18 +40,15 @@ return require('packer').startup(function(use)
   -- Show marks (TODO: find a replacement)
   use 'kshenoy/vim-signature'
 
-  -- Init screen (TODO: find a replacement)
-  use 'mhinz/vim-startify'
-
   -- Integration with tmux
   use 'christoomey/vim-tmux-navigator'
 
   -- Show whitespace at the end of lines
-  use 'bronson/vim-trailing-whitespace'
+  -- use 'bronson/vim-trailing-whitespace'
 
   -- Snippets (TODO: find a replacement)
-  use 'SirVer/ultisnips'
-  use 'honza/vim-snippets'
+  use 'hrsh7th/cmp-vsnip'
+  use 'hrsh7th/vim-vsnip'
 
   -- MDX (Markdown with jsx)
   use 'jxnblk/vim-mdx-js'
@@ -65,7 +66,6 @@ return require('packer').startup(function(use)
   use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/cmp-nvim-lua'
   use 'hrsh7th/nvim-cmp'
-  use 'quangnguyen30192/cmp-nvim-ultisnips'
 
   -- Treesitter
   use {
@@ -87,8 +87,10 @@ return require('packer').startup(function(use)
   use 'github/copilot.vim'
 
   -- Lua Vim dev
+  use { 'ckipp01/stylua-nvim', run = 'cargo install stylua' }
   use 'folke/lua-dev.nvim'
 
   -- Rust
   use 'simrat39/rust-tools.nvim'
+
 end)

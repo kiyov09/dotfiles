@@ -7,19 +7,20 @@ require('plugins.fugitive')
 
 -- Only plugins with a large config gets its own file
 
+-- Lualine
+require 'lualine'.setup {
+  options = {
+    theme = 'gruvbox',
+    component_separators = { left = '|', right = '|' },
+    section_separators = { left = '', right = '' },
+  },
+}
+
 -- Dev icons
 require 'nvim-web-devicons'.setup {}
 
 -- Auto pairs
 require("nvim-autopairs").setup {}
-
--- UtiSnips
-g_opt.UltiSnipsExpandTrigger = "<tab>"
-g_opt.UltiSnipsJumpForwardTrigger = "<c-n>"
-g_opt.UltiSnipsJumpBackwardTrigger = "<c-p>"
-
--- Startify
-g_opt.startify_change_to_dir = 0
 
 -- Colorizer
 g_opt.colorizer_nomap = 1

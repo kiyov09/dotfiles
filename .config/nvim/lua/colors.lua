@@ -7,8 +7,12 @@ vim.cmd [[
   colorscheme gruvbox
 ]]
 
--- Airline plugin
-g_opt.airline_theme = 'gruvbox'
+-- vim.cmd [[
+--   colorscheme ayu-dark
+-- ]]
+
+-- Tokionight
+-- vim.cmd[[colorscheme tokyonight-night]]
 
 -- Highlight grupo for match
 -- TODO: Convert to lua

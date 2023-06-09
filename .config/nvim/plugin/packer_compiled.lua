@@ -74,11 +74,6 @@ end
 time([[try_loadstring definition]], false)
 time([[Defining packer_plugins]], true)
 _G.packer_plugins = {
-  catppuccin = {
-    loaded = true,
-    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/catppuccin",
-    url = "https://github.com/catppuccin/nvim"
-  },
   ["cmp-buffer"] = {
     loaded = true,
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/cmp-buffer",
@@ -99,15 +94,15 @@ _G.packer_plugins = {
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/cmp-nvim-lua",
     url = "https://github.com/hrsh7th/cmp-nvim-lua"
   },
-  ["cmp-nvim-ultisnips"] = {
-    loaded = true,
-    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/cmp-nvim-ultisnips",
-    url = "https://github.com/quangnguyen30192/cmp-nvim-ultisnips"
-  },
   ["cmp-path"] = {
     loaded = true,
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/cmp-path",
     url = "https://github.com/hrsh7th/cmp-path"
+  },
+  ["cmp-vsnip"] = {
+    loaded = true,
+    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/cmp-vsnip",
+    url = "https://github.com/hrsh7th/cmp-vsnip"
   },
   ["copilot.vim"] = {
     loaded = true,
@@ -124,10 +119,25 @@ _G.packer_plugins = {
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/gruvbox",
     url = "https://github.com/gruvbox-community/gruvbox"
   },
+  ["gruvbox-material"] = {
+    loaded = true,
+    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/gruvbox-material",
+    url = "https://github.com/sainnhe/gruvbox-material"
+  },
   ["lua-dev.nvim"] = {
     loaded = true,
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/lua-dev.nvim",
     url = "https://github.com/folke/lua-dev.nvim"
+  },
+  ["lualine.nvim"] = {
+    loaded = true,
+    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/lualine.nvim",
+    url = "https://github.com/nvim-lualine/lualine.nvim"
+  },
+  ["neovim-ayu"] = {
+    loaded = true,
+    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/neovim-ayu",
+    url = "https://github.com/Shatur/neovim-ayu"
   },
   ["nvim-autopairs"] = {
     loaded = true,
@@ -179,6 +189,11 @@ _G.packer_plugins = {
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/rust-tools.nvim",
     url = "https://github.com/simrat39/rust-tools.nvim"
   },
+  ["stylua-nvim"] = {
+    loaded = true,
+    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/stylua-nvim",
+    url = "https://github.com/ckipp01/stylua-nvim"
+  },
   ["telescope-fzf-native.nvim"] = {
     loaded = true,
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/telescope-fzf-native.nvim",
@@ -194,20 +209,10 @@ _G.packer_plugins = {
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/telescope.nvim",
     url = "https://github.com/nvim-telescope/telescope.nvim"
   },
-  ultisnips = {
+  ["tokyonight.nvim"] = {
     loaded = true,
-    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/ultisnips",
-    url = "https://github.com/SirVer/ultisnips"
-  },
-  ["vim-airline"] = {
-    loaded = true,
-    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-airline",
-    url = "https://github.com/vim-airline/vim-airline"
-  },
-  ["vim-airline-themes"] = {
-    loaded = true,
-    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-airline-themes",
-    url = "https://github.com/vim-airline/vim-airline-themes"
+    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/tokyonight.nvim",
+    url = "https://github.com/folke/tokyonight.nvim"
   },
   ["vim-commentary"] = {
     loaded = true,
@@ -229,20 +234,15 @@ _G.packer_plugins = {
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-mdx-js",
     url = "https://github.com/jxnblk/vim-mdx-js"
   },
+  ["vim-rhubarb"] = {
+    loaded = true,
+    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-rhubarb",
+    url = "https://github.com/tpope/vim-rhubarb"
+  },
   ["vim-signature"] = {
     loaded = true,
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-signature",
     url = "https://github.com/kshenoy/vim-signature"
-  },
-  ["vim-snippets"] = {
-    loaded = true,
-    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-snippets",
-    url = "https://github.com/honza/vim-snippets"
-  },
-  ["vim-startify"] = {
-    loaded = true,
-    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-startify",
-    url = "https://github.com/mhinz/vim-startify"
   },
   ["vim-surround"] = {
     loaded = true,
@@ -254,11 +254,6 @@ _G.packer_plugins = {
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-tmux-navigator",
     url = "https://github.com/christoomey/vim-tmux-navigator"
   },
-  ["vim-trailing-whitespace"] = {
-    loaded = true,
-    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-trailing-whitespace",
-    url = "https://github.com/bronson/vim-trailing-whitespace"
-  },
   ["vim-unimpaired"] = {
     loaded = true,
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-unimpaired",
@@ -268,6 +263,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-vinegar",
     url = "https://github.com/tpope/vim-vinegar"
+  },
+  ["vim-vsnip"] = {
+    loaded = true,
+    path = "/Users/placeit/.local/share/nvim/site/pack/packer/start/vim-vsnip",
+    url = "https://github.com/hrsh7th/vim-vsnip"
   }
 }
 
