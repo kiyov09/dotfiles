@@ -85,7 +85,7 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 - tldr
 - httpie
 
-> Note: See the brew-dump.txt file for more
+> Note: See the Brewfile for the complete list of packages
 
 ## Apps
 
