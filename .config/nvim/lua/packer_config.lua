@@ -6,10 +6,9 @@ return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
   -- Color schemes
-  use 'gruvbox-community/gruvbox'
-  use 'sainnhe/gruvbox-material'
-  use 'folke/tokyonight.nvim'
-  use 'Shatur/neovim-ayu'
+  use 'ellisonleao/gruvbox.nvim'
+  -- use 'gruvbox-community/gruvbox'
+  -- use 'sainnhe/gruvbox-material'
 
   -- Lualine
   use {
@@ -29,7 +28,7 @@ return require('packer').startup(function(use)
   use 'alexlafroscia/postcss-syntax.vim'
 
   -- From the great tpope
-  use 'tpope/vim-commentary'
+  -- use 'tpope/vim-commentary'
   use 'tpope/vim-fugitive'
   use 'tpope/vim-rhubarb'
   use 'tpope/vim-markdown'
@@ -37,18 +36,14 @@ return require('packer').startup(function(use)
   use 'tpope/vim-unimpaired'
   use 'tpope/vim-vinegar'
 
+  -- Commenting (a replacement for vim-commentary)
+  use 'numToStr/Comment.nvim'
+
   -- Show marks (TODO: find a replacement)
   use 'kshenoy/vim-signature'
 
   -- Integration with tmux
   use 'christoomey/vim-tmux-navigator'
-
-  -- Show whitespace at the end of lines
-  -- use 'bronson/vim-trailing-whitespace'
-
-  -- Snippets (TODO: find a replacement)
-  use 'hrsh7th/cmp-vsnip'
-  use 'hrsh7th/vim-vsnip'
 
   -- MDX (Markdown with jsx)
   use 'jxnblk/vim-mdx-js'
@@ -58,6 +53,12 @@ return require('packer').startup(function(use)
 
   -- LSP
   use 'neovim/nvim-lspconfig'
+  -- Progress status for lsp initialisation
+  use { 'j-hui/fidget.nvim', tag = 'legacy' }
+
+  -- Snippets
+  use 'L3MON4D3/LuaSnip'
+  use 'rafamadriz/friendly-snippets' -- I'll remove this and create my own snippets later
 
   -- Completion
   use 'hrsh7th/cmp-nvim-lsp'
@@ -66,12 +67,19 @@ return require('packer').startup(function(use)
   use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/cmp-nvim-lua'
   use 'hrsh7th/nvim-cmp'
+  use 'saadparwaiz1/cmp_luasnip' -- Integration with LuaSnip
 
   -- Treesitter
   use {
     'nvim-treesitter/nvim-treesitter',
     run = function() require('nvim-treesitter.install').update({ with_sync = true }) end
   }
+  use 'nvim-treesitter/playground'
+  use({
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    after = "nvim-treesitter",
+    requires = "nvim-treesitter/nvim-treesitter",
+  })
   use 'windwp/nvim-ts-autotag'
 
   -- Telescope
@@ -82,6 +90,7 @@ return require('packer').startup(function(use)
     run = 'make'
   }
   use 'nvim-telescope/telescope-ui-select.nvim'
+  use 'nvim-telescope/telescope-live-grep-args.nvim'
 
   -- Copilot
   use 'github/copilot.vim'
@@ -92,5 +101,8 @@ return require('packer').startup(function(use)
 
   -- Rust
   use 'simrat39/rust-tools.nvim'
+
+  -- None-ls
+  use 'nvimtools/none-ls.nvim'
 
 end)

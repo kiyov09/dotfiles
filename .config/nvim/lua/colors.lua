@@ -1,18 +1,20 @@
 local g_opt = vim.g
 
-g_opt.gruvbox_contrast_dark = 'hard'
-g_opt.gruvbox_invert_selection = '0'
-
-vim.cmd [[
-  colorscheme gruvbox
-]]
+-- g_opt.gruvbox_contrast_dark = 'hard'
+-- g_opt.gruvbox_invert_selection = '0'
 
 -- vim.cmd [[
---   colorscheme ayu-dark
+--   colorscheme gruvbox
 -- ]]
 
--- Tokionight
--- vim.cmd[[colorscheme tokyonight-night]]
+require'gruvbox'.setup {
+  italic = {
+    strings = false
+  },
+  contrast = "hard",
+  transparent_mode = true
+}
+vim.cmd("colorscheme gruvbox")
 
 -- Highlight grupo for match
 -- TODO: Convert to lua
@@ -61,5 +63,14 @@ nmap(
 
 -- Remove MatchGroup
 nmap('<leader>r#', remove_match)
+
+-- Make hover window same style as cmp
+vim.cmd([[ hi! link FloatBorder Normal ]])
+vim.cmd([[ hi! link NormalFloat Normal ]])
+
+-- Make the LspInfoBorder highlight group the same color as FloatBorder
+vim.cmd [[
+  hi! link LspInfoBorder FloatBorder
+]]
 
 return M

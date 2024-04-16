@@ -11,8 +11,31 @@ vim.keymap.set("n", "<leader>sd", vim.diagnostic.open_float, opts)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
+-- Border for diagnostic windows
+vim.diagnostic.config {
+    float = { border = "rounded" },
+}
+
+-- Rounded borders for the hover floating window
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+  vim.lsp.handlers.hover,
+  {
+    border = 'rounded'
+  }
+)
+
+-- Border for the lsp info window
+-- Need to update the color of the border (it's)
+local lsp_wins = require('lspconfig.ui.windows')
+lsp_wins.default_options.border = 'rounded'
+
+
 local on_attach = function(client, bufnr)
-	if client.name ~= "efm" and client.name ~= "rust_analyzer" then
+	if client.name ~= "efm"
+    and client.name ~= "rust_analyzer"
+    and client.name ~= "ocamllsp"
+    and client.name ~= "ruby_ls"
+  then
 		client.server_capabilities.documentFormattingProvider = false
 		client.server_capabilities.documentFormattingRangeProvider = false
 	end
@@ -110,6 +133,7 @@ lspconfig.dotls.setup({
 
 -- Tailwindcss
 lspconfig.tailwindcss.setup({
+  -- on_attach = on_attach,
 	capabilities = capabilities,
 	filetypes = {
 		"aspnetcorerazor",
@@ -254,6 +278,7 @@ lspconfig.emmet_ls.setup({
 vim.cmd([[
     let g:copilot_filetypes = {
     \ 'gitcommit': v:true,
+    \ 'markdown': v:true,
     \ }
 ]])
 
@@ -282,11 +307,33 @@ require("lspconfig").lua_ls.setup({
 			},
 		},
 	},
+  on_attach = on_attach,
+  capabilities = capabilities,
 })
 -- Lua end
 
 -- Marksman
 require("lspconfig").marksman.setup({
   capabilities = capabilities,
+  on_attach = on_attach,
 })
 -- Marksman end
+
+-- Solargraph
+require("lspconfig").solargraph.setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+  cmd = { "/Users/placeit/.gem/ruby/2.7.0/bin/solargraph", "stdio" },
+})
+-- Solargraph end
+
+-- OCaml
+require("lspconfig").ocamllsp.setup{
+  capabilities = capabilities,
+  on_attach = on_attach,
+}
+-- OCaml end
+
+-- Lsp init progress
+require'fidget'.setup {}
+-- Lsp init progress end

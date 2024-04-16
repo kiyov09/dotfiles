@@ -1,4 +1,5 @@
 local set = vim.opt
+local g = vim.g
 
 -- Number bar
 set.number = true
@@ -71,3 +72,11 @@ set.wildignore = { '*.so', '*.swp', '*.pyc', '*.zip', '*.rar' }
 if vim.fn.executable('rg') == 1 then
   set.grepprg = 'rg --vimgrep --color=never'
 end
+
+-- Netrw options
+
+-- Allow delete no empty folders
+g.netrw_localrmdir = 'rmdir -r'
+
+-- Show as tree
+g.netrw_liststyle = 3

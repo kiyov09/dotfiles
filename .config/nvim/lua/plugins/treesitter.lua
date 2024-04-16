@@ -31,5 +31,23 @@ treesitter.setup {
     "toml",
     "markdown",
     "markdown_inline",
-  }
+    "jq",
+    "toml",
+    "ocaml",
+    "ocaml_interface",
+    "ocamllex",
+  },
+
+  playground = {
+    enable = true,
+    disable = {},
+    updatetime = 25,
+  },
+
+  query_linter = {
+    enable = true,
+    use_virtual_text = true,
+    lint_events = {"BufWrite", "CursorHold"},
+  },
 }
+

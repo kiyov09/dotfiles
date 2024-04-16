@@ -15,7 +15,7 @@ api.nvim_create_autocmd("FileType", {
 -- Set tabs for: ruby, lua
 api.nvim_create_autocmd("FileType", {
   command = "setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab",
-  pattern = { "ruby", "lua" },
+  pattern = { "ruby", "lua", "ocaml", "htmldjango", "html" },
 })
 
 -- Set tabs for: js, ts (if package.json exists)
@@ -29,6 +29,26 @@ api.nvim_create_autocmd("FileType", {
   command = "setlocal conceallevel=0",
   pattern = "markdown",
 })
+
+-- Set ocaml filetype for .eml files
+api.nvim_create_autocmd({"BufNewFile","BufRead"}, {
+  command = "setlocal filetype=ocaml",
+  pattern = "*.eml",
+})
+
+-- Highlight yanked text
+local textYankPostGrp = api.nvim_create_augroup("HighlightYank", {
+  clear = true,
+})
+
+api.nvim_create_autocmd("TextYankPost", {
+  callback = function ()
+    vim.highlight.on_yank({ higroup = 'Search', timeout = 150 })
+  end,
+  group = textYankPostGrp,
+})
+
+-- Highlight word under cursor on hold
 
 local highlightAuGrp = api.nvim_create_augroup("Highlight", {
   clear = true,
@@ -55,7 +75,7 @@ end
 M.set_format_on_save = function ()
   api.nvim_create_autocmd("BufWritePre", {
     callback = function ()
-      vim.lsp.buf.format({ timeout_ms = 2000 })
+      vim.lsp.buf.format({ timeout_ms = 3000 })
     end,
     group = api.nvim_create_augroup("Format", {
       clear = true,
