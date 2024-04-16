@@ -6,6 +6,7 @@ local appsModal = hs.hotkey.modal.new(hyper, 'o');
 
 local apps = {
   { mod = '', key = "g", app = "Google Chrome" },
+  { mod = '', key = "f", app = "Firefox" },
   { mod = '', key = "k", app = "Slack" },
   { mod = '', key = "t", app = "Wezterm" },
   { mod = '', key = "d", app = "Dash" },

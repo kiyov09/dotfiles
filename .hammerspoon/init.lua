@@ -22,6 +22,17 @@ end)
 -- ENABLE CLI ACCESS
 hs.ipc.cliInstall()
 
+-- Debugging win/app name
+hs.hotkey.bind(hyper, 'b', function()
+  local win = hs.window.focusedWindow()
+  local app = win:application()
+  local app_name = app:name()
+  local win_name = win:title()
+  local win_role = win:role()
+  local win_subrole = win:subrole()
+  hs.alert.show(app_name .. ' - ' .. win_name .. ' - ' .. win_role .. ' - ' .. win_subrole)
+end)
+
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
@@ -88,13 +99,14 @@ function compare_win_pos(a, b)
 end
 
 local no_tiling_apps = {
-  'Activity Monitor',
-  '1Password',
+  -- 'Activity Monitor',
   'Notification Center',
   'System Settings',
   'Karabiner-Elements',
   'Updater',
   'SecurityAgent',
+  'Logi Options',
+  'coreautha'
 }
 
 -- TODO: Save state of the tiling layout
@@ -138,6 +150,14 @@ spaces_watcher:start()
 
 local space_windows = hs.window.filter.defaultCurrentSpace
 space_windows.forceRefreshOnSpaceChange = true
+
+-- Exclude finder if the title is Open or Save
+space_windows = space_windows:setAppFilter('Preview', { rejectTitles = { 'Open', 'Save' } })
+
+-- Exclude all no_tiling_apps from the space_windows filter
+for _, app_name in ipairs(no_tiling_apps) do
+  space_windows = space_windows:setAppFilter(app_name, false)
+end
 
 function handle_window_created(win)
   if not win then
@@ -222,6 +242,23 @@ function handle_window_created(win)
   end
 end
 
+--[[
+  The ideal is to go back to the last focused window
+  on this space
+--]]
+function make_left_focus(space_id)
+  if not visible_apps or not visible_apps[space_id] then
+    return
+  end
+
+  local left_win = visible_apps[space_id].left_side.win
+  if not left_win then
+    return
+  end
+
+  left_win:focus()
+end
+
 function handle_window_destroyed(win)
   if not win then
     return
@@ -257,7 +294,10 @@ function handle_window_destroyed(win)
     end
 
     visible_apps[space_id].right_side.top.cell = new_right_top_cell
+
     apply_win_positions(space_id)
+    make_left_focus(space_id)
+
     return
   end
 
@@ -293,6 +333,8 @@ function handle_window_destroyed(win)
     end
 
     apply_win_positions(space_id)
+    make_left_focus(space_id)
+
     return
   end
 
@@ -334,6 +376,8 @@ function handle_window_destroyed(win)
     end
 
     apply_win_positions(space_id)
+    make_left_focus(space_id)
+
     return
   end
 end
@@ -356,15 +400,22 @@ function apply_win_positions(space_id)
   end
 
   local left = wins.left_side
-  hs.grid.set(left.win, left.cell)
+  -- hs.grid.set(left.win, left.cell)
+  apply_position_to_win(left.win, left.cell)
 
   if wins.right_side.top then
-    hs.grid.set(wins.right_side.top.win, wins.right_side.top.cell)
+    -- hs.grid.set(wins.right_side.top.win, wins.right_side.top.cell)
+    apply_position_to_win(wins.right_side.top.win, wins.right_side.top.cell)
   end
 
   if wins.right_side.bottom then
-    hs.grid.set(wins.right_side.bottom.win, wins.right_side.bottom.cell)
+    -- hs.grid.set(wins.right_side.bottom.win, wins.right_side.bottom.cell)
+    apply_position_to_win(wins.right_side.bottom.win, wins.right_side.bottom.cell)
   end
+end
+
+function apply_position_to_win(win, cell)
+  hs.grid.set(win, cell)
 end
 
 function init_tiling()
@@ -424,6 +475,18 @@ end
 
 init_tiling()
 
+-- Filter for apps that should not be tiled
+local exluded_apps = hs.window.filter.new(false) -- false means exclude all apps
+-- Allow all no_tiling_apps in the exluded_apps filter
+for _, app_name in ipairs(no_tiling_apps) do
+  exluded_apps = exluded_apps:setAppFilter(app_name, true)
+end
+
+exluded_apps:subscribe(hs.window.filter.windowInCurrentSpace, function(win)
+  -- Center the window
+  win:centerOnScreen()
+end)
+
 --------------------
 ---- Move focus between visible widows
 --------------------
@@ -432,33 +495,27 @@ local focusModal = hs.hotkey.modal.new(hyper, 'w');
 
 focusModal:bind('', 'h', function ()
   space_windows:focusWindowWest();
+  focusModal:exit()
 end)
 
 focusModal:bind('', 'l', function ()
   space_windows:focusWindowEast();
+  focusModal:exit()
 end)
 
 focusModal:bind('', 'k', function ()
   space_windows:focusWindowNorth()
+  focusModal:exit()
 end)
 
 focusModal:bind('', 'j', function ()
   space_windows:focusWindowSouth()
+  focusModal:exit()
 end)
 
-function focusModal:entered()
-  hs.window.highlight.ui.overlay=true
-  hs.window.highlight.ui.overlayColor={0,0,0,0.1}
-  hs.window.highlight.ui.overlayStrokeColor={0,0,0,0.5}
-  -- hs.window.highlight.ui.overlayStrokeWidth=5
-  hs.window.highlight.ui.frameWidth = 10
-  hs.window.highlight.ui.frameColor = {0,0.6,1,0.8}
-  hs.window.highlight.start()
-end
-
-function focusModal:exited()
-  hs.window.highlight.stop()
-end
+focusModal:bind('', 'return', function ()
+  focusModal:exit()
+end)
 
 focusModal:bind('', 'escape', function()
   focusModal:exit()
@@ -568,3 +625,5 @@ end
 
 hs.hotkey.bind(hyper, 'Left', resize_window_left)
 hs.hotkey.bind(hyper, 'Right', resize_window_right)
+
+-----------------------------------------------------------------------------------
