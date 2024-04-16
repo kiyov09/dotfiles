@@ -1,2 +1,5 @@
 .tmux/plugins
 .DS_Store
+*.log
+packer_compiled.lua
+.config/tmux/plugins
