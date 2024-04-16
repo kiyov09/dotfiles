@@ -19,10 +19,10 @@ plugins=(
   zsh-autosuggestions
 )
 
-source $ZSH/oh-my-zsh.sh
+# According to the zsh-completions README, this line should be before `source $ZSH/oh-my-zsh.sh`
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
-# Completions
-autoload -U compinit && compinit
+source $ZSH/oh-my-zsh.sh
 
 # colors
 autoload colors zsh/terminfo
@@ -44,8 +44,16 @@ setopt CORRECT
 # Reduce delay on <Esc> key press to change vi modes
 export KEYTIMEOUT=1
 
+# Set history file (for completeness) and history size
+HISTFILE=~/.zsh_history
+HISTSIZE=999999999
+SAVEHIST=$HISTSIZE
+
 bindkey "^P" history-beginning-search-backward
 bindkey "^N" history-beginning-search-forward
+
+# clear the screen
+alias cl='clear'
 
 # Prompt when overwriting existing files
 alias mv='mv -i'
@@ -68,49 +76,44 @@ export MANPAGER='col -bx | bat -l man -p'
 # aliases for Tmux
 alias tmux='tmux -2'
 alias tmux-attach='tmux attach -t'
-alias tmux-new='tmux new -s'
+# alias tmux-new='tmux new -s'
+alias tnew='~/Scripts/tmux_new_session.sh'
 alias tmux-kill='tmux kill-session -t'
 
 # AWS VAULT ALIAS (ENVATO)
-alias aws='aws-vault exec enrique_mejias -- aws'
+# alias aws='aws-vault exec enrique_mejias -- aws'
+alias aws_with_profile='aws-vault exec $(cat ~/.aws/config | grep "profile" | sed -E "s/\[profile ([^]]*)\]/\1/" | fzf)'
 
 # Fix colors for htop
 alias htop='TERM=xterm-256color htop'
 
-# Exa
-alias ls='exa --icons'
-alias ll='exa --icons -l'
-alias exa='exa --icons'
-alias exal='exa --icons -l'
+# Eza
+alias ls='eza --icons'
+alias ll='eza --icons -l'
+alias eza='eza --icons'
+alias ezal='eza --icons -l'
+alias tree='eza --icons --tree'
+
+# Firefox CLI
+alias fx-cli='/Applications/Firefox.app/Contents/MacOS/firefox'
+
+# New git branch in placeit repo
+function new_pl_branch() {
+    git checkout -b $1 $(git merge-base main staging1)
+}
+
+# ssh to staging 1
+alias ssh-stg1='ssh -l deploy _staging.placeit.net'
 
 # nvm
-load_nvm() {
+function load_nvm() {
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh"  ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 }
 
 # rbenv
-load_rbenv() {
+function load_rbenv() {
     eval "$(rbenv init -)"
-}
-
-# Detach, if inside tmux, or exit
-exit() {
-    if [[ $RANGER_LEVEL -gt 0 ]] || [[ -z $TMUX ]]; then
-        builtin exit
-    else
-        count_tmux_windows=`tmux lsw | wc -l`
-        if [[ $count_tmux_windows -gt 1 ]]; then
-            builtin exit
-        else
-            count_window_panes=`tmux lsp | wc -l`
-            if [[ $count_window_panes -gt 1 ]]; then
-                builtin exit
-            else
-                tmux detach
-            fi
-        fi
-    fi
 }
 
 export PATH="/Users/placeit/Projects/Envato/deploy/bin:$PATH"
@@ -130,6 +133,9 @@ fi
 
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --follow --hidden --smart-case --glob "!.git/*"'
 
+# useful aliases for fzf
+alias fzfscope="~/Scripts/fzfscope.sh"
+
 # Cargo (Rust)
 source "$HOME/.cargo/env"
 
@@ -139,8 +145,20 @@ export LDFLAGS="-L/usr/local/opt/mysql@5.6/lib"
 export CPPFLAGS="-I/usr/local/opt/mysql@5.6/include"
 export DYLD_LIBRARY_PATH="/usr/local/opt/mysql@5.6/lib:$DYLD_LIBRARY_PATH"
 
+# Make sure the curl executable is the one from brew
+export PATH="/usr/local/opt/curl/bin:$PATH"
+
+# Include /usr/local/sbin in PATH
+export PATH="/usr/local/sbin:$PATH"
+
+# opam configuration
+[[ ! -r /Users/placeit/.opam/opam-init/init.zsh ]] || source /Users/placeit/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+
 # Zoxide
 eval "$(zoxide init zsh)"
 
 # Startship prompt
 eval "$(starship init zsh)"
+
+# Profiling ZSH end
+# zprof

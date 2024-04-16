@@ -8,9 +8,6 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-#[merge]
-#	tool = vimdiff
-#	conflictstyle = diff3
 
 # Grabbed from https://www.grzegorowski.com/using-vim-or-neovim-nvim-as-a-git-mergetool
 # define command which will be used when "nvim" is set as a merge tool
